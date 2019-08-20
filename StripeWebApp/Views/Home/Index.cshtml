@@ -1,8 +1,30 @@
-﻿@{
+﻿@using Microsoft.Extensions.Options
+@model StripeWebApp.Data.PaymentReturn
+@inject IOptions<StripeWebApp.Data.StripeSettings> Stripe
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @{
+        if (Model == null || !Model.Succeeded)
+        {
+            <form asp-action="Charge" asp-controller="Home" method="POST">
+                <article>
+                    <label>Amount: 5.00€</label>
+                </article>
+                <script src="//checkout.stripe.com/v2/checkout.js"
+                        class="stripe-button"
+                        data-key="@Stripe.Value.PublishableKey"
+                        data-locale="auto"
+                        data-description="Sample Charge"
+                        data-amount="500">
+                </script>
+            </form>
+        }
+        else
+        {
+            <h1>Payment done!</h1>
+        }
+    }
 </div>
